@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -65,6 +66,10 @@
             max-width: 100%;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        .gallery img:hover {
+            transform: scale(1.05);
         }
         .video-container {
             position: relative;
@@ -111,6 +116,9 @@
         }
         input[type="submit"]:hover, input[type="reset"]:hover {
             background-color: #3a0ca3;
+        }
+        .clickable-image {
+            cursor: pointer;
         }
     </style>
 </head>
@@ -181,7 +189,13 @@
     <section id="gallery">
         <h2>风采展示</h2>
         <div class="gallery">
-            <img src="https://zhangkaiyue-lyf.github.io/mynewweb/piano.webp" alt="钢琴社日常练习场景">
+            <!-- 修改图片为可点击链接 -->
+            <a href="https://zhangkaiyue-lyf.github.io/mynewweb/club_intro.html" target="_blank">
+                <img src="https://zhangkaiyue-lyf.github.io/mynewweb/piano.webp" 
+                     alt="钢琴社日常练习场景"
+                     class="clickable-image">
+            </a>
+            <p>点击图片查看社团详细介绍</p>
         </div>
         <div class="video-container">
             <video controls>
