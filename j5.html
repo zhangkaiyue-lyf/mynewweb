@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>开开的电商平台·运营后台·订单录入与销售看板</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+        }
+        body {
+            background-color: #faf6f0; /* 浅橙色背景 */
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        /* 头部样式 - 爱马仕橙主色调 */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #d97706; /* 爱马仕橙深色 */
+        }
+        .header h1 {
+            color: #92400e; /* 爱马仕橙深色调 */
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #b45309; /* 爱马仕橙中色调 */
+            font-size: 16px;
+        }
+        /* 提示框样式 - 适配橙色主题 */
+        .alert {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            border-left: 4px solid;
+        }
+        .alert-success {
+            background-color: #fff7ed; /* 浅橙背景 */
+            border-color: #f97316; /* 爱马仕橙主色 */
+            color: #92400e; /* 深橙文字 */
+        }
+        .alert-warning {
+            background-color: #ffedd5; /* 深一点的浅橙 */
+            border-color: #d97706; /* 深橙边框 */
+            color: #7c2d12; /* 更深橙文字 */
+            font-weight: 600;
+        }
+        .alert-info {
+            background-color: #fef3c7; /* 浅黄橙 */
+            border-color: #f59e0b; /* 中橙边框 */
+            color: #92400e; /* 深橙文字 */
+        }
+        /* 时钟样式 - 橙色主题 */
+        .clock {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 600;
+            color: #92400e; /* 深橙文字 */
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #ffffff;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(217, 119, 6, 0.1); /* 橙色阴影 */
+        }
+        /* 卡片样式 - 白色底配橙色元素 */
+        .card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(217, 119, 6, 0.15); /* 橙色阴影 */
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .card h3 {
+            color: #92400e; /* 深橙标题 */
+            font-size: 20px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #fed7aa; /* 浅橙下划线 */
+        }
+        /* 表单样式 - 橙色主题 */
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .form-group label {
+            width: 120px;
+            color: #7c2d12; /* 深橙文字 */
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .form-group input[type="text"],
+        .form-group select {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #fdba74; /* 浅橙边框 */
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        .form-group input[type="text"]:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #f97316; /* 主橙边框 */
+            box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.1); /* 橙色聚焦阴影 */
+        }
+        .form-group input[type="checkbox"] {
+            margin-right: 8px;
+            accent-color: #f97316; /* 复选框橙色 */
+        }
+        /* 按钮样式 - 爱马仕橙主色 */
+        button {
+            background-color: #f97316; /* 爱马仕橙主色 */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #ea580c; /* 深一点的橙色 */
+        }
+        /* 表格样式 - 适配橙色主题 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 12px 8px;
+            text-align: center;
+            border: 1px solid #fed7aa; /* 浅橙边框 */
+        }
+        th {
+            background-color: #fff7ed; /* 浅橙背景 */
+            color: #92400e; /* 深橙文字 */
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #fffaf5; /* 极浅橙背景 */
+        }
+        tr:hover {
+            background-color: #fff3e8; /* 浅橙hover背景 */
+        }
+        /* 看板样式 - 橙色主题 */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .dashboard-item {
+            background-color: #fff7ed; /* 浅橙背景 */
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #fed7aa; /* 浅橙边框 */
+        }
+        .dashboard-item h4 {
+            color: #b45309; /* 中橙文字 */
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .dashboard-item .value {
+            color: #92400e; /* 深橙文字 */
+            font-size: 24px;
+            font-weight: 600;
+        }
+        /* VIP标签样式 - 深橙突出 */
+        .vip-tag {
+            color: #7c2d12; /* 深橙文字 */
+            font-weight: 600;
+        }
+        /* 免费标签样式 - 红色突出 */
+        .free-tag {
+            color: #dc2626; /* 红色文字 */
+            font-weight: 600;
+        }
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .form-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .form-group label {
+                margin-bottom: 5px;
+            }
+            .dashboard {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>开开的电商平台·运营后台·订单录入与销售看板</h1>
+            <p>欢迎使用内部工具，实时查看订单与销售情况</p>
+        </div>
+
+        <div class="alert alert-success">
+            <strong>温馨提示：本店当前可享受的优惠与加价政策如下：</strong>
+            <ul style="margin: 8px 0 0 20px; line-height: 1.8;">
+                <li>VIP 客户享受<strong>9 折优惠</strong></li>
+                <li><span class="free-tag">加急发货免费！</span>（原×1.1加价政策已取消）</li>
+                <li><span class="vip-tag">VIP客户专属：每小时前20分钟再享 8.5 折时段优惠！</span></li>
+            </ul>
+        </div>
+
+        <div class="clock" id="clock"></div>
+
+        <div id="timeDiscountAlert"></div>
+
+        <div class="card">
+            <h3>新建订单</h3>
+            <form onsubmit="return validateForm()">
+                <div class="form-group">
+                    <label>客户名称：</label>
+                    <input type="text" id="customerName" placeholder="请输入客户名称">
+                </div>
+                <div class="form-group">
+                    <label>商品单价（¥）：</label>
+                    <input type="text" id="priceInput" placeholder="请输入商品单价">
+                </div>
+                <div class="form-group">
+                    <label>数量（件）：</label>
+                    <input type="text" id="qtyInput" placeholder="请输入购买数量">
+                </div>
+                <div class="form-group">
+                    <label>客户类型：</label>
+                    <select id="customerType">
+                        <option value="normal">普通客户</option>
+                        <option value="vip">VIP客户</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>加急发货：</label>
+                    <input type="checkbox" id="urgentFlag"> 是（<span class="free-tag">免费</span>）
+                </div>
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <button type="submit">添加订单</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card" id="orderResult" style="display: none;">
+            <h3>订单录入结果</h3>
+            <div id="resultContent"></div>
+        </div>
+
+        <div class="card">
+            <h3>销售看板</h3>
+            <div class="dashboard" id="dashboard">
+                <div class="dashboard-item">
+                    <h4>订单总数</h4>
+                    <div class="value" id="totalOrders">0</div>
+                </div>
+                <div class="dashboard-item">
+                    <h4>销售总额（¥）</h4>
+                    <div class="value" id="totalSales">0.00</div>
+                </div>
+                <div class="dashboard-item">
+                    <h4>平均客单价（¥）</h4>
+                    <div class="value" id="avgOrderPrice">0.00</div>
+                </div>
+            </div>
+
+            <h3>订单历史</h3>
+            <div id="orderTableContainer">
+                <table id="orderTable">
+                    <thead>
+                        <tr>
+                            <<th>客户名称</</th>
+                            <<th>单价（¥）</</th>
+                            <<th>数量</</th>
+                            <<th>基础金额（¥）</</th>
+                            <<th>最终金额（¥）</</th>
+                            <<th>VIP客户</</th>
+                            <<th>加急发货</</th>
+                            <<th>时段折扣</</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderTableBody">
+                        <tr>
+                            <td colspan="8" style="color: #b45309;">暂无订单数据</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var orders = [];
+
+        function padZero(n) {
+            return n < 10 ? "0" + n : n;
+        }
+
+        function updateClock() {
+            var now = new Date();
+            var y = now.getFullYear();
+            var m = now.getMonth() + 1;
+            var d = now.getDate();
+            var hh = now.getHours();
+            var mm = now.getMinutes();
+            var ss = now.getSeconds();
+            var weekNames = ["日", "一", "二", "三", "四", "五", "六"];
+            var w = weekNames[now.getDay()];
+            var timeStr = `${y}年${padZero(m)}月${padZero(d)}日 星期${w} ${padZero(hh)}:${padZero(mm)}:${padZero(ss)}`;
+            document.getElementById("clock").textContent = timeStr;
+            
+            if (ss === 0) {
+                updateTimeDiscountAlert();
+            }
+        }
+
+        function updateTimeDiscountAlert() {
+            var now = new Date();
+            var minute = now.getMinutes();
+            var alertEl = document.getElementById("timeDiscountAlert");
+            
+            if (minute >= 0 && minute <= 20) {
+                alertEl.innerHTML = `
+                    <div class="alert alert-warning">
+                        当前为整点前 20 分钟！<span class="vip-tag">VIP客户可额外享受8.5折时段优惠！</span>普通客户无此优惠~
+                        <br>提示：<span class="free-tag">加急发货免费</span>，可优先处理订单！
+                    </div>
+                `;
+            } else {
+                alertEl.innerHTML = `
+                    <div class="alert alert-info">
+                        小贴士：每个整点前20分钟，<span class="vip-tag">VIP客户专属8.5折时段优惠</span>，请留意下单时间~
+                        <br>提示：<span class="free-tag">加急发货免费</span>，可优先处理订单！
+                    </div>
+                `;
+            }
+        }
+
+        updateClock();
+        updateTimeDiscountAlert();
+        setInterval(updateClock, 1000);
+
+        // 输入校验弹窗提示
+        function validateForm() {
+            var nameStr = document.getElementById("customerName").value.trim();
+            var priceStr = document.getElementById("priceInput").value.trim();
+            var qtyStr = document.getElementById("qtyInput").value.trim();
+            
+            if (!nameStr) {
+                alert("客户名称不能为空！");
+                return false;
+            }
+
+            var price = parseFloat(priceStr);
+            if (isNaN(price) || price <= 0) {
+                alert("商品单价必须是大于 0 的数字！");
+                return false;
+            }
+
+            var qty = parseInt(qtyStr, 10);
+            if (isNaN(qty) || qty <= 0) {
+                alert("数量必须是大于 0 的整数！");
+                return false;
+            }
+
+            var isVip = document.getElementById("customerType").value === "vip";
+            var isUrgent = document.getElementById("urgentFlag").checked;
+            processOrder(nameStr, price, qty, isVip, isUrgent);
+            
+            return false;
+        }
+
+        // 核心修改：加急发货免费（取消×1.1加价）
+        function processOrder(customerName, price, quantity, isVip, isUrgent) {
+            var baseTotal = price * quantity;
+            var afterVip = isVip ? baseTotal * 0.9 : baseTotal;
+            // 加急发货免费：无论是否加急，金额保持不变（取消×1.1计算）
+            var afterUrgent = afterVip; 
+            var now = new Date();
+            var minute = now.getMinutes();
+            var hitTimeDiscount = false;
+            var finalTotal = afterUrgent;
+
+            // VIP客户整点前20分钟享受8.5折
+            if (isVip && minute >= 0 && minute <= 20) {
+                finalTotal *= 0.85;
+                hitTimeDiscount = true;
+            }
+
+            // 学号末位9特殊逻辑：VIP最低7折封顶
+            if (isVip && finalTotal < baseTotal * 0.7) {
+                finalTotal = baseTotal * 0.7;
+            }
+
+            var orderType = isVip && finalTotal > 1000 ? "大额 VIP 订单" : "普通订单";
+
+            var resultEl = document.getElementById("orderResult");
+            var contentEl = document.getElementById("resultContent");
+            resultEl.style.display = "block";
+            
+            // 加急状态文案调整（突出免费）
+            var urgentDesc = isUrgent ? `<span class="free-tag">加急发货（免费）</span>` : "未加急";
+            var timeDiscountDesc = hitTimeDiscount 
+                ? `<p><strong>VIP专属时段折扣（8.5折）：</strong>¥${finalTotal.toFixed(2)}</p>`
+                : (isVip ? "<p><strong>时段折扣：</strong>当前非整点前20分钟，未享受VIP专属8.5折</p>" : "<p><strong>时段折扣：</strong>普通客户无专属时段折扣</p>");
+
+            contentEl.innerHTML = `
+                <p><strong>客户名称：</strong>${customerName}</p>
+                <p><strong>商品单价：</strong>¥${price.toFixed(2)}</p>
+                <p><strong>购买数量：</strong>${quantity} 件</p>
+                <p><strong>基础金额：</strong>¥${baseTotal.toFixed(2)}</p>
+                <p><strong>${isVip ? "VIP折扣后（9折）" : "客户类型优惠"}：</strong>¥${afterVip.toFixed(2)}</p>
+                <p><strong>加急状态：</strong>${urgentDesc}</p>
+                ${timeDiscountDesc}
+                ${isVip && finalTotal === baseTotal * 0.7 ? `<p><strong>VIP最低7折封顶：</strong>¥${finalTotal.toFixed(2)}</p>` : ""}
+                <p><strong>最终支付金额：</strong><span style="color: #ea580c; font-size: 18px; font-weight: 600;">¥${finalTotal.toFixed(2)}</span></p>
+                <p><strong>订单类型：</strong>${orderType}</p>
+            `;
+
+            orders.push({
+                name: customerName,
+                price: price,
+                qty: quantity,
+                baseTotal: baseTotal,
+                finalTotal: finalTotal,
+                isVip: isVip,
+                isUrgent: isUrgent,
+                hitTimeDiscount: hitTimeDiscount
+            });
+
+            updateDashboard();
+            updateOrderTable();
+        }
+
+        function updateDashboard() {
+            var totalOrders = orders.length;
+            var totalSales = orders.reduce((sum, order) => sum + order.finalTotal, 0);
+            var avgPrice = totalOrders > 0 ? totalSales / totalOrders : 0;
+
+            document.getElementById("totalOrders").textContent = totalOrders;
+            document.getElementById("totalSales").textContent = totalSales.toFixed(2);
+            document.getElementById("avgOrderPrice").textContent = avgPrice.toFixed(2);
+        }
+
+        function updateOrderTable() {
+            var tableBody = document.getElementById("orderTableBody");
+            
+            if (orders.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="8" style="color: #b45309;">暂无订单数据</td></tr>`;
+                return;
+            }
+
+            var tableHtml = "";
+            orders.forEach((order, index) => {
+                tableHtml += `
+                    <tr>
+                        <td>${order.name}</td>
+                        <td>¥${order.price.toFixed(2)}</td>
+                        <td>${order.qty}</td>
+                        <td>¥${order.baseTotal.toFixed(2)}</td>
+                        <td>¥${order.finalTotal.toFixed(2)}</td>
+                        <td>${order.isVip ? "是" : "否"}</td>
+                        <td>${order.isUrgent ? "是（免费）" : "否"}</td>
+                        <td>${order.hitTimeDiscount ? "是（VIP专属20分钟优惠）" : "否"}</td>
+                    </tr>
+                `;
+            });
+
+            tableBody.innerHTML = tableHtml;
+        }
+    </script>
+</body>
+</html>
